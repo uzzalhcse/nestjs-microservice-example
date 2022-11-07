@@ -14,7 +14,7 @@ services:
     #   - ./api-gateway:/app/api-gateway
     #   - /app/api-gateway/node_modules
     ports:
-      - '3000:3000'
+      - '5050:5050'
 
   user-service:
     build:
