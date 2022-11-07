@@ -85,8 +85,8 @@ services:
         - 5672:5672
         - 15672:15672
     volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+        - rabbitLib:/var/lib/rabbitmq/
+        - rabbitVar:/var/log/rabbitmq
 
   mongodb:
     image: mongo:latest
@@ -135,3 +135,5 @@ volumes:
   postgres:
   mysql:
   mongodb_data:
+  rabbitLib:
+  rabbitVar:
