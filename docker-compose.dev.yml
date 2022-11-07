@@ -1,0 +1,142 @@
+version: '3.8'
+services:
+  api-gateway:
+    build:
+      dockerfile: Dockerfile
+      context: ./api-gateway
+      target: development
+    command: npm run start:dev
+    env_file:
+      - ./api-gateway/.env
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./api-gateway:/app/api-gateway
+      - /app/api-gateway/node_modules
+    ports:
+      - '3000:3000'
+
+  user-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./user-service
+      target: development
+    command: npm run start:dev
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      - mongodb
+      - rabbitmq
+    volumes:
+      - ./user-service:/app/user-service
+      - /app/user-service/node_modules
+    # ports:
+    #   - '3000:3000'
+
+
+  product-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./product-service
+      target: development
+    command: npm run start:dev 
+    env_file:
+      - ./product-service/.env
+    depends_on:
+      - postgres
+      - rabbitmq
+    volumes:
+      - ./product-service:/app/product-service
+      - /app/product-service/node_modules
+    # ports:
+    #   - '3000:3000'
+
+
+
+  order-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./order-service
+      target: development
+    command: npm run start:dev 
+    env_file:
+      - ./order-service/.env
+    depends_on:
+      - mysql
+      - rabbitmq
+    volumes:
+      - ./order-service:/app/order-service
+      - /app/order-service/node_modules
+    # ports:
+    #   - '3000:3000'
+
+
+  # client:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./client
+  #   command: npm run dev 
+  #   volumes:
+  #     - ./client:/app/client
+  #     - /app/client/node_modules
+  #     - /app/client/.next
+  #   ports:
+  #     - '3001:3001'
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+
+
+  postgres:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'order-service'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  postgres:
+  mysql:
+  mongodb_data:

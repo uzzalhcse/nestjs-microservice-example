@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: ts4udocker/ecommerce-rmq_order-service
+          env:
+            - name: RMQ_URL
+              value: amqp://guest:guest@ecommerce-rabbitmq:5672
+            - name: DATABASE_URL
+              value: mysql://root:password@ecommerce-mysql-headless:3306/order-service

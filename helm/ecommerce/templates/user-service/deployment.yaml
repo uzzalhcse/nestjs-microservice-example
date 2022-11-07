@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: ts4udocker/ecommerce-rmq_user-service
+          env:
+            - name: RMQ_URL
+              value: amqp://guest:guest@ecommerce-rabbitmq:5672
+            - name: MONGO_URI
+              value: mongodb://root:rootpassword@ecommerce-mongodb-headless:27017

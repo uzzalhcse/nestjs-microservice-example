@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: ts4udocker/ecommerce-rmq_product-service
+          env:
+            - name: RMQ_URL
+              value: amqp://guest:guest@ecommerce-rabbitmq:5672
+            - name: DATABASE_URL
+              value: postgres://myuser:mypassword@ecommerce-postgresql-hl:5432/product-service?schema=public

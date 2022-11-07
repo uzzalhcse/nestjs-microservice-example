@@ -1,0 +1,19 @@
+mongodb:
+  architecture: replicaset
+  auth:
+    rootPassword: rootpassword
+
+rabbitmq:
+  auth:
+    username: guest
+    password: guest
+postgresql:
+  auth:
+    username: myuser
+    password: mypassword
+    database: product-service
+mysql:
+  auth:
+    username: root
+    password: password
+    database: order-service
