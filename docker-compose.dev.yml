@@ -70,18 +70,17 @@ services:
     # ports:
     #   - '3000:3000'
 
-
-  # client:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./client
-  #   command: npm run dev 
-  #   volumes:
-  #     - ./client:/app/client
-  #     - /app/client/node_modules
-  #     - /app/client/.next
-  #   ports:
-  #     - '3001:3001'
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    command: npm run dev 
+    volumes:
+      - ./client:/app/client
+      - /app/client/node_modules
+      - /app/client/.next
+    ports:
+      - '3001:3001'
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

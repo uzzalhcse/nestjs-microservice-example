@@ -75,7 +75,7 @@ services:
       context: ./client
     command: npm start 
     ports:
-      - '3001:3001'
+      - '3015:3001'
 
 
   rabbitmq:
