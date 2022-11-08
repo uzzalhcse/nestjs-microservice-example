@@ -23,8 +23,11 @@ function login() {
         e.preventDefault()
         axios.post("/auth/login", data)
             .then(res => {
-                Cookies.set("ecom_micro", `Bearer ${res.data.token}`);
-                window.location.href = `/`;
+                if(res.data.token){
+                    Cookies.set("ecom_micro", `Bearer ${res.data.token}`);
+                    window.location.href = `/`;
+                }
+                
             })
             .catch(err => {
                 console.log(err);
