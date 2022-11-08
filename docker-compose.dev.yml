@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       context: ./api-gateway
       target: development
+    image: ts4udocker/ecommerce-rmq_gateway
     command: npm run start:dev
     env_file:
       - ./api-gateway/.env
@@ -14,13 +15,14 @@ services:
       - ./api-gateway:/app/api-gateway
       - /app/api-gateway/node_modules
     ports:
-      - '3000:3000'
+      - '5050:5050'
 
   user-service:
     build:
       dockerfile: Dockerfile
       context: ./user-service
       target: development
+    image: ts4udocker/ecommerce-rmq_user-service
     command: npm run start:dev
     env_file:
       - ./user-service/.env
@@ -39,7 +41,8 @@ services:
       dockerfile: Dockerfile
       context: ./product-service
       target: development
-    command: npm run start:dev 
+    image: ts4udocker/ecommerce-rmq_product-service
+    command: npm run start:migrate:dev
     env_file:
       - ./product-service/.env
     depends_on:
@@ -58,7 +61,8 @@ services:
       dockerfile: Dockerfile
       context: ./order-service
       target: development
-    command: npm run start:dev 
+    image: ts4udocker/ecommerce-rmq_order-service
+    command: npm run start:migrate:dev
     env_file:
       - ./order-service/.env
     depends_on:
@@ -74,13 +78,14 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./client
+    image: ts4udocker/ecommerce-rmq_client
     command: npm run dev 
     volumes:
       - ./client:/app/client
       - /app/client/node_modules
       - /app/client/.next
     ports:
-      - '3001:3001'
+      - '5051:3001'
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
