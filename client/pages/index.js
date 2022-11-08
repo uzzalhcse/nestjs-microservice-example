@@ -136,7 +136,7 @@ export default function Home() {
 
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Add Product</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <label>Enter name:</label>

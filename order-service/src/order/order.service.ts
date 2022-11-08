@@ -85,6 +85,26 @@ export class OrderService {
         }, []);
     }
 
+    async getProductsByIds(productIds){
+        try {
+            let products = await this.productClient.send("products_by_ids", { ids: productIds })
+            .pipe(
+                timeout(3000),
+                catchError(err => {
+                    if (err instanceof TimeoutError) {
+                        throw new RequestTimeoutException()
+                    }
+                    return throwError(err);
+                })
+                )
+            .toPromise();
+            return products
+        } catch (error) {
+            return []
+        }
+      
+    }
+
 
     async myOrders({ userId }): Promise<any> {
         let orders = await this.prisma.order.findMany({
@@ -97,18 +117,8 @@ export class OrderService {
         let productIds = this.uniqueBy(orders, "productId")
 
 
-        let products = await this.productClient.send("products_by_ids", { ids: productIds })
-        .pipe(
-            timeout(3000),
-            catchError(err => {
-                if (err instanceof TimeoutError) {
-                    throw new RequestTimeoutException()
-                }
-                return throwError(err);
-            })
-            )
-        .toPromise();
-
+        
+        let products =  await this.getProductsByIds(productIds)
       
         let formated = orders.map(x => ({
             ...x,
