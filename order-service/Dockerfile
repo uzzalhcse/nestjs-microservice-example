@@ -1,4 +1,4 @@
-FROM node:16-alpine As development
+FROM node:16-alpine3.16 As development
 
 #Specify a working directory
 WORKDIR /app/order-service
@@ -15,7 +15,7 @@ RUN npx prisma generate
 
 RUN npm run build
 
-FROM node:alpine as production
+FROM node:16-alpine3.16 as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
