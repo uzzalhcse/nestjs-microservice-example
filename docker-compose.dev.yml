@@ -88,7 +88,7 @@ services:
       - '5051:3001'
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3.11.11-management
     container_name: 'rabbitmq'
     ports:
         - 5672:5672
