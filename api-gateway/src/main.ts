@@ -5,7 +5,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ExceptionFilter } from './auth/rpc-exception.filter';
 
+
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule,{cors:true});
   app.useGlobalFilters(new ExceptionFilter());
   const configService = app.get(ConfigService);
