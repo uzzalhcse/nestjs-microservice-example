@@ -90,8 +90,7 @@ services:
         - 5672:5672
         - 15672:15672
     volumes:
-        - rabbitLib:/var/lib/rabbitmq/
-        - rabbitVar:/var/log/rabbitmq
+      - rabbitmq_data:/var/lib/rabbitmq # Persist data
 
   mongodb:
     image: mongo:latest
@@ -140,5 +139,4 @@ volumes:
   postgres:
   mysql:
   mongodb_data:
-  rabbitLib:
-  rabbitVar:
+  rabbitmq_data:
