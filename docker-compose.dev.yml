@@ -93,9 +93,8 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
-    # volumes:
-    #     - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-    #     - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persist data
 
   mongodb:
     image: mongo:latest
@@ -144,3 +143,4 @@ volumes:
   postgres:
   mysql:
   mongodb_data:
+  rabbitmq_data:
