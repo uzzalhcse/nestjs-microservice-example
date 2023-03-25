@@ -1,4 +1,4 @@
-FROM node:14-alpine As development
+FROM node:16-alpine As development
 
 #Specify a working directory
 WORKDIR /app/api-gateway
@@ -12,7 +12,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:alpine as production
+FROM node:16-alpine as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
