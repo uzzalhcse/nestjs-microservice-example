@@ -26,7 +26,7 @@ export class ChatController implements OnModuleInit{
   constructor(@Inject('CHAT') private readonly chatClient: ClientKafka) {}
 
   onModuleInit() {
-    // ['chat_create', 'my_chats'].forEach(action => this.chatClient.subscribeToResponseOf(action));
+    ['chat_create', 'my_chats'].forEach(action => this.chatClient.subscribeToResponseOf(action));
   }
 
   @Post('create')
