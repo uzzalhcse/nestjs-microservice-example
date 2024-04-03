@@ -54,6 +54,23 @@ services:
     # ports:
     #   - '3000:3000'
 
+  chat-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./chat-service
+      target: production
+    image: ts4udocker/ecommerce-rmq_chat-service
+    command: npm run start:prod
+    env_file:
+      - ./chat-service/.env
+    depends_on:
+      - postgres
+      - kafka
+    volumes:
+      - ./chat-service:/app/chat-service
+      - /app/chat-service/node_modules
+
+
   order-service:
     build:
       dockerfile: Dockerfile
@@ -78,10 +95,37 @@ services:
       dockerfile: Dockerfile
       context: ./client
     image: ts4udocker/ecommerce-rmq_client
-    command: npm start 
+    command: npm start
     ports:
       - '5051:3001'
 
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    depends_on:
+      - "kafka"
+
+  kafka:
+    image: obsidiandynamics/kafka
+    container_name: 'kafka'
+    restart: "no"
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
 
   rabbitmq:
     image: rabbitmq:3.11.11-management

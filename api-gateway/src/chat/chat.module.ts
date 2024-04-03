@@ -1,25 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ProductController } from './product.controller';
-
+import { ChatController } from './chat.controller';
 
 @Module({
-  imports:[
+  imports: [
     ClientsModule.register([
       {
-        name:"PRODUCT",
-        transport:Transport.RMQ,
+        name: 'CHAT',
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'product_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            clientId: 'chat',
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'chat-consumer',
           },
         },
       },
-    ])
+    ]),
   ],
-  controllers: [ProductController]
+  controllers: [ChatController],
 })
-export class ProductModule {}
+export class ChatModule {}
