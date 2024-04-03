@@ -3,22 +3,23 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { OrderController } from './order.controller';
 
 @Module({
-  imports:[
+  imports: [
     ClientsModule.register([
       {
-        name:"ORDER",
-        transport:Transport.RMQ,
+        name: 'ORDER',
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'order_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            clientId: 'order',
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'order-consumer',
           },
         },
       },
-    ])
+    ]),
   ],
-  controllers: [OrderController]
+  controllers: [OrderController],
 })
 export class OrderModule {}

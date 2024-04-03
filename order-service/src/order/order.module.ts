@@ -5,23 +5,23 @@ import { OrderService } from './order.service';
 import { PrismaService } from './prisma.service';
 
 @Module({
-  imports:[
+  imports: [
     ClientsModule.register([
       {
-        name:"PRODUCT",
-        transport:Transport.RMQ,
+        name: 'PRODUCT',
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'product_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'product-consumer',
           },
         },
       },
     ]),
   ],
   controllers: [OrderController],
-  providers: [OrderService,PrismaService]
+  providers: [OrderService, PrismaService],
 })
 export class OrderModule {}

@@ -1,4 +1,3 @@
-
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
@@ -6,13 +5,13 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.connectMicroservice({
-    transport: Transport.RMQ,
+    transport: Transport.KAFKA,
     options: {
-      urls: [process.env.RMQ_URL],
-      queue: 'product_queue',
-      noAck: false,
-      queueOptions: {
-        durable: false
+      client: {
+        brokers: ['kafka:29092'],
+      },
+      consumer: {
+        groupId: 'product-consumer',
       },
     },
   });

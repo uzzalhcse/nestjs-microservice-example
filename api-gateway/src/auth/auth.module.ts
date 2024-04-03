@@ -4,20 +4,20 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
-
 @Global()
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name:"USER",
-        transport:Transport.RMQ,
+        name: 'USER',
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'user_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            clientId: 'user',
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'user-consumer',
           },
         },
       },

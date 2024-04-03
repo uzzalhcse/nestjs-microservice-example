@@ -9,7 +9,8 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-
+# Install Nest CLI globally
+RUN npm install -g @nestjs/cli
 RUN npx prisma generate
 
 RUN npm run build

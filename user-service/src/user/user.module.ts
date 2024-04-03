@@ -19,13 +19,13 @@ import { JwtModule } from '@nestjs/jwt';
     ClientsModule.register([
       {
         name:"PRODUCT",
-        transport:Transport.RMQ,
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'product_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'product-consumer',
           },
         },
       },

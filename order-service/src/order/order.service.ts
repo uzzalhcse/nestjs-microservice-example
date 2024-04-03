@@ -1,14 +1,16 @@
-import { HttpStatus, Inject, Injectable, Logger, NotFoundException, RequestTimeoutException } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit, RequestTimeoutException } from '@nestjs/common';
+import { ClientKafka, RpcException } from '@nestjs/microservices';
 import { catchError, throwError, timeout, TimeoutError } from 'rxjs';
 import { PrismaService } from './prisma.service';
 
 @Injectable()
-export class OrderService {
+export class OrderService implements OnModuleInit{
     @Inject('PRODUCT')
-    private readonly productClient: ClientProxy
+    private readonly productClient: ClientKafka
     constructor(private prisma: PrismaService) { }
-
+    onModuleInit() {
+        ['single_product', 'decrease_stock','products_by_ids'].forEach(action => this.productClient.subscribeToResponseOf(action));
+    }
     async createOrder(body): Promise<any> {
 
 
@@ -102,7 +104,7 @@ export class OrderService {
         } catch (error) {
             return []
         }
-      
+
     }
 
 
@@ -117,9 +119,9 @@ export class OrderService {
         let productIds = this.uniqueBy(orders, "productId")
 
 
-        
+
         let products =  await this.getProductsByIds(productIds)
-      
+
         let formated = orders.map(x => ({
             ...x,
             product: products?.find(product => x.productId === product.id) || null

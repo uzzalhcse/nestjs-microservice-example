@@ -8,53 +8,30 @@ export class ProductController {
 
 
     @MessagePattern("product_create")
-    createProduct(@Payload() data: any, @Ctx() context: RmqContext){
-
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    createProduct(@Payload() data: any){
         return this.productService.createProduct(data)
     }
 
 
-    
+
     @MessagePattern("all_products")
-    allProducts( @Ctx() context: RmqContext) {
-
-      
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    allProducts(@Payload() data: any) {
         return this.productService.getAllProducts()
     }
 
 
     @MessagePattern("single_product")
-    getSingleProduct(@Payload() data: any, @Ctx() context: RmqContext){
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    getSingleProduct(@Payload() data: any){
         return this.productService.getSingleProduct(data.productId)
     }
     @MessagePattern("decrease_stock")
-    decreaseStock(@Payload() data: any, @Ctx() context: RmqContext){
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    decreaseStock(@Payload() data: any){
         return this.productService.decreaseStock(data)
     }
 
 
     @MessagePattern("products_by_ids")
-    getProductByIds(@Payload() data: any, @Ctx() context: RmqContext){
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    getProductByIds(@Payload() data: any){
         return this.productService.getProductByIds(data)
     }
 }

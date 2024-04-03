@@ -9,13 +9,13 @@ import { ProductModule } from './product/product.module';
     ClientsModule.register([
       {
         name:"USER",
-        transport:Transport.RMQ,
+        transport: Transport.KAFKA,
         options: {
-          urls: [process.env.RMQ_URL],
-          queue: 'user_queue',
-          noAck: false,
-          queueOptions: {
-            durable: false
+          client: {
+            brokers: ['kafka:29092'],
+          },
+          consumer: {
+            groupId: 'user-consumer',
           },
         },
       },

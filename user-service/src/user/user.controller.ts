@@ -15,35 +15,21 @@ export class UserController {
 
 
     @MessagePattern("register")
-    register(@Payload() data: any, @Ctx() context: RmqContext) {
-      
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    register(@Payload() data: any) {
         return this.userService.registerUser(data)
     }
 
 
 
     @MessagePattern("login")
-    login(@Payload() data: any, @Ctx() context: RmqContext) {
-
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
-
-        channel.ack(originalMsg);
+    login(@Payload() data: any) {
         return this.userService.login(data)
     }
 
 
     @MessagePattern("validate")
-    validate(@Payload() data: any, @Ctx() context: RmqContext) {
-      
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage()
+    validate(@Payload() data: any) {
 
-        channel.ack(originalMsg);
         return this.userService.validate(data)
     }
 

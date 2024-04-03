@@ -1,56 +1,58 @@
-import { Body, Controller, Get, HttpException, Inject, Post, Req, RequestTimeoutException, UseGuards } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    Inject, OnModuleInit,
+    Post,
+    Request,
+    RequestTimeoutException,
+    UseGuards
+} from '@nestjs/common';
+import { ClientKafka, RpcException } from '@nestjs/microservices';
 import { ApiBasicAuth, ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { catchError, Observable, timeout, TimeoutError } from 'rxjs';
 import { AuthGuard } from 'src/auth/auth.gurd';
 import { CreateProduct } from './dto/createProduct.dto';
 
-
 class ProductResponse {
-    name: String
+    name: string;
 }
 
 @Controller('product')
 @ApiTags('Product')
-export class ProductController {
+export class ProductController implements OnModuleInit{
     constructor(
-        @Inject('PRODUCT') private readonly productClient: ClientProxy,
-        //private readonly authService: AuthService
+        @Inject('PRODUCT') private readonly productClient: ClientKafka,
     ) { }
+    onModuleInit() {
+        ['product_create', 'all_products'].forEach(action => this.productClient.subscribeToResponseOf(action));
+    }
 
-    @Post("create")
-    @UseGuards(AuthGuard)
-    @ApiBody({type:CreateProduct})
-    @ApiBearerAuth()
-    private async createProduct(@Req() req: Request, @Body() data: CreateProduct): Promise<Observable<ProductResponse>> {
+    private async sendRequest(pattern: string, data: any): Promise<Observable<any>> {
         return this.productClient
-            .send("product_create", data)
+            .send(pattern, data)
             .pipe(
                 timeout(5000),
                 catchError(err => {
                     if (err instanceof TimeoutError) {
-                         throw new RequestTimeoutException()
+                        throw new RequestTimeoutException();
                     }
-                throw new HttpException(err.message, err.status)
-            }))
+                    throw new HttpException(err.message, err.status);
+                })
+            );
+    }
 
-
-
+    @Post("create")
+    @UseGuards(AuthGuard)
+    @ApiBody({ type: CreateProduct })
+    @ApiBearerAuth()
+    private async createProduct(@Request() req: Request, @Body() data: CreateProduct): Promise<Observable<ProductResponse>> {
+        return this.sendRequest("product_create", data);
     }
 
     @Get('all')
     private async allProduct(): Promise<Observable<any>> {
-        return this.productClient
-            .send("all_products", {})
-            .pipe(
-                timeout(5000),
-                catchError(err => {
-                    if (err instanceof TimeoutError) {
-                         throw new RequestTimeoutException()
-                    }
-                throw new HttpException(err.message, err.status)
-            }))
-
+        return this.sendRequest("all_products", {});
     }
 }

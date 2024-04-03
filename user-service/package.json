@@ -32,6 +32,7 @@
     "amqp-connection-manager": "^4.1.9",
     "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",
+    "kafkajs": "^2.2.4",
     "mongoose": "^6.7.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",

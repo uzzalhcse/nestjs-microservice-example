@@ -30,6 +30,7 @@
     "@prisma/client": "^4.5.0",
     "amqp-connection-manager": "^4.1.9",
     "amqplib": "^0.10.3",
+    "kafkajs": "^2.2.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
