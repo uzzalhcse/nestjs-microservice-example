@@ -21,12 +21,12 @@ class ChatResponse {
 }
 
 @Controller('chat')
-@ApiTags('chat')
+@ApiTags('Chat')
 export class ChatController implements OnModuleInit{
   constructor(@Inject('CHAT') private readonly chatClient: ClientKafka) {}
 
   onModuleInit() {
-    ['chat_create', 'my_chats'].forEach(action => this.chatClient.subscribeToResponseOf(action));
+    // ['chat_create', 'my_chats'].forEach(action => this.chatClient.subscribeToResponseOf(action));
   }
 
   @Post('create')
@@ -40,6 +40,7 @@ export class ChatController implements OnModuleInit{
     return this.chatClient.send('chat_create', data).pipe(
       timeout(5000),
       catchError((err) => {
+        console.log('createChat error', err)
         if (err instanceof TimeoutError) {
           throw new RequestTimeoutException();
         }
